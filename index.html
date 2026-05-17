@@ -334,6 +334,25 @@ body.customer-view table.lines input, body.customer-view table.lines select { po
 .dash-mini .num { text-align: right; font-variant-numeric: tabular-nums; }
 .dash-mini .meta { color: var(--ink-dim); font-size: 12px; }
 
+/* Login overlay */
+.login-overlay { position: fixed; inset: 0; background: linear-gradient(135deg, #182B4A 0%, #0B1828 100%); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 20px; }
+.login-overlay.hidden { display: none; }
+.login-card { background: #fff; border-radius: 12px; padding: 36px 36px 28px; width: 100%; max-width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,.3); text-align: center; }
+.login-logo { margin-bottom: 8px; } .login-logo svg { display: block; margin: 0 auto; width: 120px; height: auto; }
+.login-title { font-size: 18px; font-weight: 900; letter-spacing: .12em; color: var(--brand); margin: 0 0 4px; }
+.login-sub { font-size: 12px; color: var(--ink-dim); margin: 0 0 22px; letter-spacing: .04em; }
+.login-form { text-align: left; }
+.login-form .field { margin-bottom: 12px; }
+.login-form label { display: block; font-size: 11px; color: var(--ink-dim); text-transform: uppercase; letter-spacing: .04em; font-weight: 600; margin-bottom: 4px; }
+.login-form select, .login-form input[type="password"] { width: 100%; padding: 9px 12px; border: 1px solid var(--line-strong); border-radius: 6px; font: inherit; box-sizing: border-box; }
+.login-form select:focus, .login-form input:focus { outline: 2px solid var(--brand-soft); border-color: var(--brand); }
+.login-remember { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-dim); margin: 8px 0 14px; cursor: pointer; }
+.login-remember input { margin: 0; }
+.login-error { color: var(--bad); font-size: 12px; margin-bottom: 10px; min-height: 16px; }
+.login-btn { width: 100%; padding: 11px; font-size: 14px; font-weight: 700; }
+.login-notice { margin-top: 18px; padding: 10px; background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 6px; font-size: 11px; color: #92400e; text-align: left; }
+.login-notice.hidden { display: none; }
+
 /* User pill */
 .user-pill { position: relative; display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.10); padding: 4px 12px 4px 4px; border-radius: 22px; cursor: pointer; user-select: none; margin-left: 8px; }
 .user-pill:hover { background: rgba(255,255,255,.18); }
@@ -478,6 +497,7 @@ body.perm-no-viewCost .totals-card.gp-card,
 body.perm-no-viewCost .modifier-row,
 body.perm-no-viewCost .gp-card,
 body.perm-no-editMaterials #settings-materials,
+body.perm-no-editMaterials #settings-sub,
 body.perm-no-editLabor #settings-labor,
 body.perm-no-manageCustomers #customers-tab,
 body.perm-no-manageTemplates #templates-tab,
@@ -537,6 +557,40 @@ body.customer-view .customer-header { display: block; }
 </style>
 </head>
 <body>
+<div class="login-overlay" id="login-overlay">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg viewBox="0 0 220 320" xmlns="http://www.w3.org/2000/svg" aria-label="Caliber Sign Company">
+        <!-- C-mark, brand paths from Light_Horizontal copy.svg, recolored for white background -->
+        <g transform="translate(64.86, 8) scale(4.0) translate(0, -0.22)">
+          <path fill="#F1593A"  d="M22.57,15.27v-3.76C22.57,5.28,17.51.22,11.29.22S0,5.28,0,11.51v11.63C0,29.36,5.06,34.42,11.29,34.42s11.29-5.06,11.29-11.29v-3.76h-6.16v3.76c0,2.83-2.3,5.13-5.13,5.13s-5.13-2.3-5.13-5.13v-11.63c0-2.83,2.3-5.13,5.13-5.13s5.13,2.3,5.13,5.13v3.76h6.16ZM11.29,4.33c-3.96,0-7.18,3.22-7.18,7.18v11.63c0,3.96,3.22,7.18,7.18,7.18s7.18-3.22,7.18-7.18v-1.71h2.05v1.71c0,5.09-4.14,9.23-9.23,9.23S2.05,28.23,2.05,23.14v-11.63C2.05,6.42,6.19,2.27,11.29,2.27s9.23,4.14,9.23,9.23v1.71h-2.05v-1.71c0-3.96-3.22-7.18-7.18-7.18Z"/>
+          <path fill="#182B4A"  d="M14.36,11.51c0-1.7-1.38-3.08-3.08-3.08s-3.08,1.38-3.08,3.08v11.63c0,1.7,1.38,3.08,3.08,3.08s3.08-1.38,3.08-3.08v-3.76h-2.05v3.76c0,.57-.46,1.03-1.03,1.03s-1.03-.46-1.03-1.03v-11.63c0-.57.46-1.03,1.03-1.03s1.03.46,1.03,1.03v3.76h2.05v-3.76h0s0,0,0,0Z"/>
+        </g>
+        <!-- CALIBER wordmark (brand paths, recolored navy) -->
+        <g transform="translate(2.825000000000003, 175) scale(2.5) translate(-29.00, -2.96)">
+          <path fill="#182B4A"  d="M37.2,20.84c-.85.8-1.83,1.19-3.26,1.19-1.75,0-2.89-.69-3.66-1.62-1.25-1.48-1.38-3.55-1.38-8.03s.13-6.54,1.38-8.03c.77-.93,1.91-1.62,3.66-1.62,1.43,0,2.46.42,3.31,1.22.95.87,1.46,2.31,1.51,3.97l-2.97.9c-.03-.69-.13-2.28-.45-2.73-.26-.42-.69-.69-1.4-.69s-1.14.29-1.4.72c-.58.9-.66,2.81-.66,6.25s.08,5.35.66,6.25c.26.42.69.72,1.4.72s1.14-.26,1.4-.69c.32-.48.42-2.07.45-2.75l2.97.9c-.05,1.7-.61,3.15-1.56,4.03Z"/><path fill="#182B4A"  d="M50.52,21.82l-.77-3.74h-4.37l-.74,3.74h-3.13l3.98-16.19-.24-2.67h3.79l4.58,18.86h-3.1ZM47.58,7.52l-1.62,7.89h3.23l-1.62-7.89Z"/><path fill="#182B4A"  d="M57.35,21.82V2.96h2.97v16.19h5.86l-.9,2.68h-7.92Z"/><path fill="#182B4A"  d="M69.48,21.82V2.96h2.97v18.86h-2.97Z"/><path fill="#182B4A"  d="M85.74,20.63c-.8.79-1.93,1.19-3.71,1.19h-4.69V2.96h4.72c1.75,0,2.89.37,3.66,1.17.87.87,1.19,1.83,1.19,3.87,0,1.35-.21,2.38-1.09,3.29-.26.26-.58.5-.98.66.4.19.77.42,1.03.69.87.9,1.09,2.04,1.09,3.79,0,2.23-.32,3.29-1.22,4.21ZM81.79,5.64h-1.48v5.11h1.48c1.54,0,2.15-.77,2.15-2.57s-.61-2.54-2.15-2.54ZM81.74,13.27h-1.43v5.88h1.43c1.59,0,2.25-.74,2.25-2.94s-.66-2.94-2.25-2.94Z"/><path fill="#182B4A"  d="M91.56,21.82V2.96h7.92l.9,2.68h-5.85v5.35h4.27v2.68s-4.27,0-4.27,0v5.48h5.85l-.9,2.68h-7.92Z"/><path fill="#182B4A"  d="M111.68,21.82l-2.46-7.74h-1.67v7.74h-2.97V5.64l-.9-2.67h5.67c3.44,0,4.82,1.67,4.82,5.56,0,2.33-.48,4-2.2,4.93l2.81,8.37h-3.1ZM109.37,5.64h-1.83v5.78h1.83c1.59,0,1.83-1.32,1.83-2.89s-.24-2.89-1.83-2.89Z"/>
+        </g>
+        <!-- SIGN COMPANY wordmark (brand paths, recolored navy) -->
+        <g transform="translate(24.17, 235) scale(2.0) translate(-28.95, -25.48)">
+          <path fill="#182B4A"  d="M28.95,30.91c.08-.12.15-.25.23-.37.08-.12.2-.15.3-.07.05.04.74.61,1.43.61.61,0,1.01-.37,1.01-.83,0-.53-.46-.87-1.35-1.24-.91-.38-1.62-.86-1.62-1.89,0-.7.53-1.65,1.95-1.65.89,0,1.56.46,1.65.53.07.04.14.17.05.3-.07.11-.15.23-.22.34-.07.12-.19.17-.31.09-.06-.04-.69-.45-1.2-.45-.75,0-1.01.47-1.01.8,0,.51.39.82,1.13,1.12,1.03.42,1.92.91,1.92,2,0,.93-.83,1.68-1.99,1.68-1.09,0-1.77-.57-1.92-.7-.08-.07-.14-.13-.05-.29Z"/><path fill="#182B4A"  d="M35.91,25.74c0-.09.08-.17.17-.17h.59c.09,0,.17.08.17.17v5.9c0,.09-.08.17-.17.17h-.59c-.09,0-.17-.08-.17-.17v-5.9Z"/><path fill="#182B4A"  d="M43.1,25.48c.86,0,1.56.31,2.17.83.07.07.08.18,0,.25-.13.14-.27.28-.4.42-.07.08-.14.07-.23,0-.42-.37-.97-.61-1.51-.61-1.27,0-2.24,1.07-2.24,2.32,0,1.24.97,2.31,2.24,2.31.74,0,1.25-.27,1.34-.3v-1h-.87c-.1,0-.17-.07-.17-.16v-.52c0-.1.07-.17.17-.17h1.62c.09,0,.16.08.16.17s0,1.44,0,2.16c0,.04-.04.12-.07.14,0,0-.92.59-2.21.59-1.77,0-3.21-1.42-3.21-3.2s1.43-3.22,3.21-3.22Z"/><path fill="#182B4A"  d="M48.56,25.64c0-.09.08-.16.17-.16h.22s3.87,4.47,3.87,4.47h0v-4.21c0-.09.07-.17.17-.17h.57c.09,0,.17.08.17.17v6c0,.09-.08.16-.17.16h-.23s-3.87-4.6-3.87-4.6h0v4.34c0,.09-.07.17-.17.17h-.56c-.09,0-.17-.08-.17-.17v-6Z"/><path fill="#182B4A"  d="M65.66,25.48c.9,0,1.55.3,2.16.83.08.07.08.18,0,.25l-.39.4c-.06.08-.14.08-.22,0-.42-.37-.99-.6-1.54-.6-1.27,0-2.24,1.07-2.24,2.32s.97,2.31,2.25,2.31c.65,0,1.11-.26,1.53-.59.08-.06.16-.05.21,0l.41.4c.07.06.05.18,0,.24-.61.59-1.37.86-2.17.86-1.78,0-3.22-1.42-3.22-3.2,0-1.78,1.43-3.22,3.22-3.22Z"/><path fill="#182B4A"  d="M73.32,25.48c1.78,0,3.21,1.43,3.21,3.22s-1.43,3.2-3.21,3.2-3.2-1.42-3.2-3.2,1.42-3.22,3.2-3.22ZM73.32,31c1.27,0,2.32-1.03,2.32-2.31s-1.04-2.33-2.32-2.33-2.31,1.06-2.31,2.33,1.04,2.31,2.31,2.31Z"/><path fill="#182B4A"  d="M79.71,25.61c.02-.07.09-.13.16-.13h.14c.05,0,.13.04.15.1l1.86,4.55h.04l1.85-4.55c.02-.05.09-.1.15-.1h.14c.07,0,.14.06.16.13l1.1,5.99c.03.12-.04.2-.16.2h-.58c-.08,0-.15-.06-.17-.12l-.66-3.98h-.03l-1.6,4.1c-.02.05-.07.1-.15.1h-.16c-.07,0-.13-.04-.15-.1l-1.61-4.1h-.04l-.64,3.98c0,.06-.09.12-.16.12h-.58c-.12,0-.19-.08-.17-.2l1.1-5.99Z"/><path fill="#182B4A"  d="M88.28,25.74c0-.09.07-.17.17-.17h2.03c1.1,0,2,.89,2,1.97s-.9,2-1.99,2h-1.29v2.09c0,.09-.08.17-.17.17h-.58c-.1,0-.17-.08-.17-.17v-5.9ZM90.42,28.67c.61,0,1.13-.5,1.13-1.14,0-.61-.52-1.07-1.13-1.07h-1.23v2.21h1.23Z"/><path fill="#182B4A"  d="M93.93,31.57l2.74-6c.03-.05.11-.1.15-.1h.09s.12.04.15.1l2.72,6c.05.12-.02.23-.15.23h-.56c-.11,0-.17-.05-.2-.13l-.55-1.22h-2.91c-.18.41-.37.81-.54,1.22-.03.06-.1.13-.2.13h-.56c-.13,0-.2-.12-.15-.23ZM97.97,29.68l-1.1-2.44h-.04l-1.09,2.44h2.23Z"/><path fill="#182B4A"  d="M102.17,25.64c0-.09.08-.16.17-.16h.22l3.87,4.47h0v-4.21c0-.09.07-.17.17-.17h.57c.09,0,.17.08.17.17v6c0,.09-.08.16-.17.16h-.23l-3.87-4.6h0v4.34c0,.09-.07.17-.17.17h-.56c-.09,0-.17-.08-.17-.17v-6Z"/><path fill="#182B4A"  d="M111.8,28.8l-2.09-2.98c-.07-.12,0-.26.14-.26h.66c.07,0,.12.04.14.08l1.61,2.27,1.61-2.27s.08-.08.14-.08h.67c.14,0,.21.14.14.26l-2.11,2.97v2.84c0,.09-.08.17-.17.17h-.59c-.1,0-.17-.08-.17-.17v-2.83Z"/>
+        </g>
+      </svg>
+    </div>
+    <p class="login-sub" style="margin-top: 4px;">Estimator · Sign in to continue</p>
+    <div class="login-form">
+      <div class="field"><label>User</label>
+        <select id="login-user"><option value="">— Pick user —</option></select>
+      </div>
+      <div class="field"><label>Password</label>
+        <input id="login-password" type="password" autocomplete="current-password" placeholder="Enter your password">
+      </div>
+      <label class="login-remember"><input type="checkbox" id="login-remember"> Stay signed in on this device</label>
+      <div class="login-error" id="login-error"></div>
+      <button class="btn primary login-btn" id="login-submit" type="button">Sign In</button>
+    </div>
+    <div class="login-notice" id="login-notice"></div>
+  </div>
+</div>
 <div class="app">
   <header class="topbar">
     <div class="logo"><svg class="logo-svg light" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 114.78 34.64">
@@ -590,7 +644,8 @@ body.customer-view .customer-header { display: block; }
       </button>
       <div class="dropdown-menu hidden" id="settings-menu">
         <button type="button" data-view="db" id="settings-materials">Materials Database</button>
-        <button type="button" data-view="laborDb" id="settings-labor">Labor Database</button>
+        <button type="button" data-view="subDb" id="settings-sub">Sub-Assemblies Database</button>
+          <button type="button" data-view="laborDb" id="settings-labor">Labor Database</button>
         <button type="button" data-view="templates" id="settings-templates">Templates</button>
           <button type="button" data-view="users" id="settings-users">Manage Users</button>
       </div>
@@ -1018,7 +1073,7 @@ body.customer-view .customer-header { display: block; }
           <input type="text" id="jobs-search" placeholder="Search by # / customer / project…">
           <select id="jobs-status-filter">
             <option value="">All statuses</option>
-            <option>Scheduled</option><option>In Fabrication</option><option>Ready for Install</option><option>On Hold</option><option>Installed</option><option>Complete</option><option>Cancelled</option>
+            <option>Pending Deposit</option><option>Permitting</option><option>In Production</option><option>Ready for Install</option><option>Final Invoicing</option><option>Complete</option>
           </select>
           <select id="jobs-priority-filter">
             <option value="">All priorities</option>
@@ -1027,6 +1082,30 @@ body.customer-view .customer-header { display: block; }
         </div>
         <div id="jobs-list"></div>
         <div id="jobs-board" class="hidden"></div>
+      </div>
+    </section>
+
+    <!-- SUB-ASSEMBLIES DB VIEW -->
+    <section class="view" id="view-subDb">
+      <div class="panel">
+        <header>
+          <h2>Sub-Assemblies Database</h2>
+          <span class="note" id="sub-db-stats"></span>
+          <button class="btn sm" id="sub-db-add-btn">+ Add Sub-Assembly</button>
+          <button class="btn sm" id="sub-db-export-btn">Export CSV</button>
+        </header>
+        <div class="search-row">
+          <input type="text" id="sub-db-search" placeholder="Search sub-assemblies…">
+          <select id="sub-db-stale-filter">
+            <option value="">All ages</option>
+            <option value="90">Stale &gt; 90 days</option>
+            <option value="180">Stale &gt; 180 days</option>
+          </select>
+          <span class="note" style="margin-left:auto;color:var(--ink-dim);font-size:12px;">
+            Cost / Price are per unit (per_in for channel letters, per_lnft for raceways, per_sqft for faces / cabinet skins)
+          </span>
+        </div>
+        <div id="sub-db-list"></div>
       </div>
     </section>
   </main>
@@ -1298,7 +1377,8 @@ const STORAGE_KEYS = {
   invoices: "csc.estimator.invoices.v1",
   invoiceCounter: "csc.estimator.invoiceCounter.v1",
   jobs: "csc.estimator.jobs.v1",
-  jobCounter: "csc.estimator.jobCounter.v1"
+  jobCounter: "csc.estimator.jobCounter.v1",
+  subAssembliesDb: "csc.estimator.subAssembliesDb.v1"
 };
 
 const ROLES = ["Owner", "Estimator", "Sales"];
@@ -1361,6 +1441,27 @@ function initLaborDb() {
   return db;
 }
 
+function initSubAssembliesDb() {
+  let db = loadJson(STORAGE_KEYS.subAssembliesDb, null);
+  if (!db) {
+    db = SEED_SUBASSEMBLIES.map(s => ({
+      id: uid(), key: s.key, name: s.name, unit: s.unit, cost: s.cost, price: s.price, lastRevised: "2026-05-03"
+    }));
+    saveJson(STORAGE_KEYS.subAssembliesDb, db);
+  } else {
+    // Migrate: any new items in SEED_SUBASSEMBLIES not in DB get added
+    const haveKeys = new Set(db.map(x => x.key));
+    let changed = false;
+    for (const s of SEED_SUBASSEMBLIES) {
+      if (!haveKeys.has(s.key)) {
+        db.push({ id: uid(), key: s.key, name: s.name, unit: s.unit, cost: s.cost, price: s.price, lastRevised: "2026-05-03" });
+        changed = true;
+      }
+    }
+    if (changed) saveJson(STORAGE_KEYS.subAssembliesDb, db);
+  }
+  return db;
+}
 function initCustomersDb() {
   let db = loadJson(STORAGE_KEYS.customers, null);
   if (!db) {
@@ -1412,13 +1513,176 @@ function migrateQuoteToProducts(q) {
   return q;
 }
 
+
+/* ---------- Auth / sessions ---------- */
+const SESSION_KEYS = {
+  sessionUser: "csc.auth.sessionUser",
+  rememberUser: "csc.auth.rememberUser",
+  inactivityMs: 30 * 60 * 1000 // 30 minutes
+};
+function _hex(bytes) { return Array.from(new Uint8Array(bytes)).map(b => b.toString(16).padStart(2,"0")).join(""); }
+function randomSalt() {
+  const arr = new Uint8Array(16);
+  crypto.getRandomValues(arr);
+  return _hex(arr);
+}
+async function hashPassword(password, salt) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveBits"]
+  );
+  const bits = await crypto.subtle.deriveBits(
+    { name: "PBKDF2", salt: enc.encode(salt), iterations: 100000, hash: "SHA-256" },
+    keyMaterial, 256
+  );
+  return _hex(bits);
+}
+async function verifyPassword(password, salt, expectedHash) {
+  if (!salt || !expectedHash) return false;
+  const h = await hashPassword(password, salt);
+  return h === expectedHash;
+}
+async function setUserPassword(user, password) {
+  if (!password) throw new Error("Password required");
+  const salt = randomSalt();
+  const hash = await hashPassword(password, salt);
+  user.passwordSalt = salt;
+  user.passwordHash = hash;
+  user.passwordUpdatedAt = new Date().toISOString();
+  saveJson(STORAGE_KEYS.users, USERS);
+}
+
+function getActiveSessionUserId() {
+  // sessionStorage is cleared when the browser tab closes; localStorage persists ("stay signed in")
+  let uid = null;
+  try { uid = sessionStorage.getItem(SESSION_KEYS.sessionUser); } catch(_) {}
+  if (!uid) {
+    try { uid = localStorage.getItem(SESSION_KEYS.rememberUser); } catch(_) {}
+  }
+  return uid;
+}
+function setActiveSession(userId, remember) {
+  try {
+    sessionStorage.setItem(SESSION_KEYS.sessionUser, userId);
+    if (remember) localStorage.setItem(SESSION_KEYS.rememberUser, userId);
+    else localStorage.removeItem(SESSION_KEYS.rememberUser);
+  } catch(_) {}
+}
+function clearSession() {
+  try { sessionStorage.removeItem(SESSION_KEYS.sessionUser); } catch(_) {}
+  try { localStorage.removeItem(SESSION_KEYS.rememberUser); } catch(_) {}
+}
+
+let _inactivityTimer = null;
+function bumpActivity() {
+  if (_inactivityTimer) clearTimeout(_inactivityTimer);
+  _inactivityTimer = setTimeout(() => {
+    clearSession();
+    showLoginOverlay("Session expired — please sign in again.");
+  }, SESSION_KEYS.inactivityMs);
+}
+
+function showLoginOverlay(message) {
+  const overlay = document.getElementById("login-overlay");
+  if (!overlay) return;
+  overlay.classList.remove("hidden");
+  populateLoginUserPicker();
+  const err = document.getElementById("login-error");
+  if (err) err.textContent = message || "";
+  // Surface first-run notice if no user has a password yet
+  const anyHasPwd = USERS.some(u => u.passwordHash);
+  const notice = document.getElementById("login-notice");
+  if (notice) {
+    if (!anyHasPwd) {
+      notice.classList.remove("hidden");
+      notice.innerHTML = '<strong>First-time setup:</strong> No password is set yet. Sign in by picking your user and clicking <strong>Sign In</strong> with the password field empty — you\'ll be prompted to create one.';
+    } else {
+      notice.classList.add("hidden");
+    }
+  }
+  setTimeout(() => { const u = document.getElementById("login-user"); if (u) u.focus(); }, 50);
+}
+function hideLoginOverlay() {
+  const overlay = document.getElementById("login-overlay");
+  if (overlay) overlay.classList.add("hidden");
+}
+function populateLoginUserPicker() {
+  const sel = document.getElementById("login-user");
+  if (!sel) return;
+  const sorted = USERS.slice().sort((a,b) => a.name.localeCompare(b.name));
+  sel.innerHTML = `<option value="">— Pick user —</option>` +
+    sorted.map(u => `<option value="${u.id}">${escapeHtml(u.name)} · ${escapeHtml(u.role)}</option>`).join("");
+  // Pre-select last remembered or current user
+  const lastId = (function(){ try { return localStorage.getItem(SESSION_KEYS.rememberUser); } catch(_) { return null; } })();
+  if (lastId) sel.value = lastId;
+}
+async function handleLoginSubmit() {
+  const errEl = document.getElementById("login-error");
+  const userId = document.getElementById("login-user").value;
+  const pwd = document.getElementById("login-password").value;
+  const remember = document.getElementById("login-remember").checked;
+  if (errEl) errEl.textContent = "";
+  if (!userId) { if (errEl) errEl.textContent = "Pick a user."; return; }
+  const u = USERS.find(x => x.id === userId);
+  if (!u) { if (errEl) errEl.textContent = "User not found."; return; }
+  // First-time password setup path
+  if (!u.passwordHash) {
+    if (!pwd) {
+      const newPwd = prompt(`Set a password for ${u.name}:`);
+      if (!newPwd) { if (errEl) errEl.textContent = "Password required to continue."; return; }
+      const confirm2 = prompt("Confirm the password:");
+      if (newPwd !== confirm2) { if (errEl) errEl.textContent = "Passwords didn\'t match. Try again."; return; }
+      await setUserPassword(u, newPwd);
+      // proceed to sign in
+    } else {
+      // user typed something in the password field — use it as the new password (still confirm)
+      const confirm2 = prompt(`Confirm new password for ${u.name}:`);
+      if (pwd !== confirm2) { if (errEl) errEl.textContent = "Passwords didn\'t match."; return; }
+      await setUserPassword(u, pwd);
+    }
+    document.getElementById("login-password").value = "";
+  } else {
+    const ok = await verifyPassword(pwd, u.passwordSalt, u.passwordHash);
+    if (!ok) { if (errEl) errEl.textContent = "Incorrect password."; return; }
+  }
+  // Sign in
+  CURRENT_USER_ID = u.id;
+  setActiveSession(u.id, remember);
+  saveJson(STORAGE_KEYS.currentUser, CURRENT_USER_ID);
+  applyRoleClass();
+  renderUserPill();
+  hideLoginOverlay();
+  bumpActivity();
+}
+function logout() {
+  clearSession();
+  showLoginOverlay("Signed out.");
+}
+window.logout = logout;
+
+
 let DB = initDb();
 let LABOR_DB = initLaborDb();
+let SUB_DB = initSubAssembliesDb();
 let CUSTOMERS = initCustomersDb();
 let TEMPLATES = loadJson(STORAGE_KEYS.templates, []);
 let PENDING = loadJson(STORAGE_KEYS.pending, []);
 let INVOICES = loadJson(STORAGE_KEYS.invoices, []);
 let JOBS = loadJson(STORAGE_KEYS.jobs, []);
+(function migrateJobStatuses(){
+  const map = {
+    "Scheduled": "Pending Deposit",
+    "In Fabrication": "In Production",
+    "On Hold": "Pending Deposit",
+    "Installed": "Final Invoicing",
+    "Cancelled": "Complete"
+  };
+  let changed = false;
+  for (const j of JOBS) {
+    if (j && j.status && map[j.status]) { j.status = map[j.status]; changed = true; }
+  }
+  if (changed) saveJson(STORAGE_KEYS.jobs, JOBS);
+})();
 let USERS = loadJson(STORAGE_KEYS.users, null);
 if (!USERS || !USERS.length) {
   USERS = [{ id: uid(), name: "Michael", role: "Owner", initials: "M", color: ROLE_COLORS.Owner, createdAt: new Date().toISOString() }];
@@ -1466,7 +1730,7 @@ const fmtPct = n => (Math.round(n*10)/10).toFixed(1) + "%";
 const daysSince = iso => Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
 const catName = k => (CATEGORIES.find(c => c.key === k) || {name:k}).name;
 const findMat = id => DB.find(m => m.id === id);
-const findSub = key => SEED_SUBASSEMBLIES.find(s => s.key === key);
+const findSub = key => SUB_DB.find(s => s.key === key);
 const findLabor = id => LABOR_DB.find(l => l.id === id);
 
 /* ---------- Rendering ---------- */
@@ -1479,6 +1743,38 @@ function render() {
   renderTotals();
   renderSavedCount();
   saveJson(STORAGE_KEYS.currentQuote, CURRENT);
+}
+
+/* Debounced renderers so typing in number inputs doesn't rebuild the input on every keystroke */
+let _renderTimer = null;
+function renderSoon() {
+  if (_renderTimer) clearTimeout(_renderTimer);
+  _renderTimer = setTimeout(() => { _renderTimer = null; render(); }, 280);
+}
+let _pdRenderTimer = null;
+function renderPdSoon() {
+  if (_pdRenderTimer) clearTimeout(_pdRenderTimer);
+  _pdRenderTimer = setTimeout(() => {
+    _pdRenderTimer = null;
+    try {
+      renderPdMaterials();
+      renderPdSubAssemblies();
+      renderPdLabor();
+      renderPdTotals();
+    } catch(_) {}
+  }, 280);
+}
+let _invRenderTimer = null;
+function renderInvSoon() {
+  if (_invRenderTimer) clearTimeout(_invRenderTimer);
+  _invRenderTimer = setTimeout(() => {
+    _invRenderTimer = null;
+    try {
+      renderInvoiceLineItems();
+      renderInvoicePayments();
+      renderInvoiceTotalsPanel();
+    } catch(_) {}
+  }, 280);
 }
 
 function renderQuoteHeader() {
@@ -1557,7 +1853,7 @@ function renderProductCard(p, idx) {
   // Qty change
   const _qtyInp = head.querySelector(".product-qty-input");
   if (_qtyInp) {
-    _qtyInp.addEventListener("input", (e) => { p.qty = Math.max(1, parseInt(e.target.value, 10) || 1); saveJson(STORAGE_KEYS.currentQuote, CURRENT); renderProducts(); renderTotals(); });
+    _qtyInp.addEventListener("input", (e) => { p.qty = Math.max(1, parseInt(e.target.value, 10) || 1); saveJson(STORAGE_KEYS.currentQuote, CURRENT); renderSoon(); });
     _qtyInp.addEventListener("click", e => e.stopPropagation());
   }
   // Delete — defensive
@@ -1650,13 +1946,13 @@ function renderProductMaterials(p) {
     const qtyInp = document.createElement("input");
     qtyInp.type = "number"; qtyInp.step = "0.01"; qtyInp.min = "0"; qtyInp.value = line.qty ?? "";
     qtyInp.className = "num";
-    qtyInp.addEventListener("input", e => { line.qty = parseFloat(e.target.value)||0; render(); });
+    qtyInp.addEventListener("input", e => { line.qty = parseFloat(e.target.value)||0; renderSoon(); });
     tr.children[2].appendChild(qtyInp);
 
     const muInp = document.createElement("input");
     muInp.type = "number"; muInp.step = "1"; muInp.min = "0"; muInp.value = markupPct;
     muInp.className = "num";
-    muInp.addEventListener("input", e => { line.markupPct = parseFloat(e.target.value)||0; render(); });
+    muInp.addEventListener("input", e => { line.markupPct = parseFloat(e.target.value)||0; renderSoon(); });
     tr.children[5].appendChild(muInp);
 
     const del = document.createElement("button");
@@ -1668,7 +1964,7 @@ function renderProductMaterials(p) {
   }
   // Misc % input wire
   const miscInp = sec.querySelector(".misc-input");
-  miscInp.addEventListener("input", e => { p.miscPct = parseFloat(e.target.value)||0; render(); });
+  miscInp.addEventListener("input", e => { p.miscPct = parseFloat(e.target.value)||0; renderSoon(); });
   // Add material button
   sec.querySelector(".add-line-product").addEventListener("click", () => {
     p.materials.push({ id: uid(), category:"", materialId:null, qty:1, markupPct: CURRENT.defaultMarkupPct });
@@ -1684,7 +1980,7 @@ function renderProductSubAssemblies(p) {
     <table class="lines"><thead><tr>
       <th class="item-col">Type</th>
       <th class="num">Qty</th>
-      <th class="num">Height/Length</th>
+      <th class="num">Dim (in / lnft / sqft)</th>
       <th class="num cost-col">Unit Cost</th>
       <th class="num">Unit Price</th>
       <th class="num cost-col">Cost</th>
@@ -1712,20 +2008,20 @@ function renderProductSubAssemblies(p) {
       <td class="num">${fmtUSD(price)}</td>
       <td></td>`;
     const typeSel = document.createElement("select");
-    typeSel.innerHTML = `<option value="">— Type —</option>` + SEED_SUBASSEMBLIES.map(s => `<option value="${s.key}" ${line.subKey===s.key?"selected":""}>${escapeHtml(s.name)}</option>`).join("");
+    typeSel.innerHTML = `<option value="">— Type —</option>` + SUB_DB.map(s => `<option value="${s.key}" ${line.subKey===s.key?"selected":""}>${escapeHtml(s.name)}</option>`).join("");
     typeSel.addEventListener("change", e => { line.subKey = e.target.value; render(); });
     tr.children[0].appendChild(typeSel);
 
     const qtyInp = document.createElement("input");
     qtyInp.type = "number"; qtyInp.step = "1"; qtyInp.min = "0"; qtyInp.value = line.qty ?? "";
     qtyInp.className = "num";
-    qtyInp.addEventListener("input", e => { line.qty = parseFloat(e.target.value)||0; render(); });
+    qtyInp.addEventListener("input", e => { line.qty = parseFloat(e.target.value)||0; renderSoon(); });
     tr.children[1].appendChild(qtyInp);
 
     const dimInp = document.createElement("input");
     dimInp.type = "number"; dimInp.step = "0.5"; dimInp.min = "0"; dimInp.value = line.dim ?? "";
     dimInp.className = "num";
-    dimInp.addEventListener("input", e => { line.dim = parseFloat(e.target.value)||0; render(); });
+    dimInp.addEventListener("input", e => { line.dim = parseFloat(e.target.value)||0; renderSoon(); });
     tr.children[2].appendChild(dimInp);
 
     const del = document.createElement("button");
@@ -1779,7 +2075,7 @@ function renderProductLabor(p) {
     const hInp = document.createElement("input");
     hInp.type = "number"; hInp.step = "0.25"; hInp.min = "0"; hInp.value = line.hours ?? "";
     hInp.className = "num";
-    hInp.addEventListener("input", e => { line.hours = parseFloat(e.target.value)||0; render(); });
+    hInp.addEventListener("input", e => { line.hours = parseFloat(e.target.value)||0; renderSoon(); });
     tr.children[1].appendChild(hInp);
 
     const del = document.createElement("button");
@@ -2711,13 +3007,13 @@ function renderHomeView() {
 function renderHomeJobs() {
   const root = document.getElementById("home-jobs-board");
   if (!root) return;
-  const active = JOBS.filter(j => !["Complete","Cancelled"].includes(j.status));
+  const active = JOBS.filter(j => !["Complete"].includes(j.status));
   const statsEl = document.getElementById("home-jobs-stats");
   const rushCount = active.filter(j => j.priority === "Rush").length;
   const highCount = active.filter(j => j.priority === "High").length;
   if (statsEl) statsEl.textContent = `${active.length} active${rushCount?` · ${rushCount} Rush`:""}${highCount?` · ${highCount} High`:""}`;
-  const cols = ["Scheduled","In Fabrication","Ready for Install","Installed","Complete"];
-  const statusColors = { "Scheduled":"#3B82F6","In Fabrication":"#F59E0B","Ready for Install":"#0891B2","Installed":"#15803d","Complete":"#15803d" };
+  const cols = ["Pending Deposit","Permitting","In Production","Ready for Install","Final Invoicing","Complete"];
+  const statusColors = { "Pending Deposit":"#F59E0B","Permitting":"#7C3AED","In Production":"#F1593A","Ready for Install":"#0891B2","Final Invoicing":"#3B82F6","Complete":"#15803d" };
   const sorted = JOBS.slice().sort((a,b) => {
     const order = { "Rush":0,"High":1,"Normal":2,"Low":3 };
     const p = (order[a.priority] ?? 2) - (order[b.priority] ?? 2);
@@ -2939,7 +3235,7 @@ function renderUserPill() {
       <span>${escapeHtml(usr.name)} <span style="color:var(--ink-dim);font-size:11px;">· ${escapeHtml(usr.role)}</span></span>
     </button>`;
   }
-  h += `<hr><button type="button" data-action="manage-users">Manage Users…</button>`;
+  h += `<hr><button type="button" data-action="manage-users">Manage Users…</button><button type="button" data-action="sign-out" style="color:var(--bad);">Sign Out</button>`;
   menu.innerHTML = h;
   menu.querySelectorAll("[data-switch-user]").forEach(b => b.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -2953,15 +3249,29 @@ function renderUserPill() {
     switchView("users");
     menu.classList.add("hidden");
   });
+  const signOutBtn = menu.querySelector('[data-action="sign-out"]');
+  if (signOutBtn) signOutBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    menu.classList.add("hidden");
+    if (confirm("Sign out?")) logout();
+  });
 }
-function setCurrentUser(id) {
-  if (!USERS.find(u => u.id === id)) return;
+async function setCurrentUser(id) {
+  const target = USERS.find(u => u.id === id);
+  if (!target) return;
+  // Require password verification when switching to another user (unless target has none set)
+  if (target.id !== CURRENT_USER_ID && target.passwordHash) {
+    const pwd = prompt(`Enter password for ${target.name}:`);
+    if (pwd === null) return;
+    const ok = await verifyPassword(pwd, target.passwordSalt, target.passwordHash);
+    if (!ok) { alert("Incorrect password."); return; }
+  }
   CURRENT_USER_ID = id;
   saveJson(STORAGE_KEYS.currentUser, CURRENT_USER_ID);
+  setActiveSession(id, false);
   applyRoleClass();
   renderUserPill();
   render();
-  // Re-render whichever view is active
   const activeView = document.querySelector(".view.active");
   if (activeView) {
     const name = activeView.id.replace("view-", "");
@@ -3033,6 +3343,11 @@ function openUserDialog(user) {
   document.getElementById("ud-name").value = user ? user.name : "";
   document.getElementById("ud-email").value = user ? (user.email || "") : "";
   document.getElementById("ud-initials").value = user ? (user.initials || makeInitials(user.name)) : "";
+  // Password fields always blank on open; hint differs
+  const pwdEl = document.getElementById("ud-password"); if (pwdEl) pwdEl.value = "";
+  const pwdConfEl = document.getElementById("ud-password-confirm"); if (pwdConfEl) pwdConfEl.value = "";
+  const hint = document.getElementById("ud-password-hint");
+  if (hint) hint.textContent = user && user.passwordHash ? "leave blank to keep current" : "required for new users";
 
   // Color swatches
   const colorRow = document.getElementById("ud-color-swatches");
@@ -3100,7 +3415,7 @@ function closeUserDialog() {
   document.getElementById("user-modal").classList.add("hidden");
   _editingUser = null;
 }
-function saveUserFromDialog() {
+async function saveUserFromDialog() {
   const name = document.getElementById("ud-name").value.trim();
   if (!name) { alert("Name is required."); return; }
   const selectedCard = document.querySelector(".role-card.selected");
@@ -3117,6 +3432,17 @@ function saveUserFromDialog() {
   });
 
   const now = new Date().toISOString();
+  const pwd = document.getElementById("ud-password").value;
+  const pwdConfirm = document.getElementById("ud-password-confirm").value;
+  if (pwd || pwdConfirm) {
+    if (pwd !== pwdConfirm) { alert("Passwords don't match."); return; }
+    if (pwd.length < 4) { alert("Password should be at least 4 characters."); return; }
+  } else if (!_editingUser) {
+    alert("Password is required when creating a new user.");
+    return;
+  }
+
+  let target;
   if (_editingUser) {
     _editingUser.name = name;
     _editingUser.email = email;
@@ -3125,10 +3451,17 @@ function saveUserFromDialog() {
     _editingUser.color = color;
     _editingUser.permissions = perms;
     _editingUser.updatedAt = now;
+    target = _editingUser;
   } else {
-    USERS.push({ id: uid(), name, email, role, initials, color, permissions: perms, createdAt: now, updatedAt: now });
+    target = { id: uid(), name, email, role, initials, color, permissions: perms, createdAt: now, updatedAt: now };
+    USERS.push(target);
   }
-  saveJson(STORAGE_KEYS.users, USERS);
+  if (pwd) {
+    try { await setUserPassword(target, pwd); }
+    catch (err) { console.error("Password set failed:", err); alert("Could not set password: " + err.message); return; }
+  } else {
+    saveJson(STORAGE_KEYS.users, USERS);
+  }
   if (_editingUser && _editingUser.id === CURRENT_USER_ID) applyRoleClass();
   closeUserDialog();
   renderUsersList(); renderUserPill();
@@ -3313,12 +3646,12 @@ function renderPdMaterials() {
     const qtyInp = document.createElement("input");
     qtyInp.type = "number"; qtyInp.step = "0.01"; qtyInp.min = "0"; qtyInp.value = line.qty ?? "";
     qtyInp.className = "num";
-    qtyInp.addEventListener("input", e => { line.qty = parseFloat(e.target.value)||0; renderPdMaterials(); renderPdTotals(); });
+    qtyInp.addEventListener("input", e => { line.qty = parseFloat(e.target.value)||0; renderPdSoon(); });
     tr.children[2].appendChild(qtyInp);
     const muInp = document.createElement("input");
     muInp.type = "number"; muInp.step = "1"; muInp.min = "0"; muInp.value = markupPct;
     muInp.className = "num";
-    muInp.addEventListener("input", e => { line.markupPct = parseFloat(e.target.value)||0; renderPdMaterials(); renderPdTotals(); });
+    muInp.addEventListener("input", e => { line.markupPct = parseFloat(e.target.value)||0; renderPdSoon(); });
     tr.children[5].appendChild(muInp);
     const del = document.createElement("button");
     del.className = "btn icon"; del.textContent = "✕";
@@ -3349,18 +3682,18 @@ function renderPdSubAssemblies() {
       <td class="num">${fmtUSD(price)}</td>
       <td></td>`;
     const typeSel = document.createElement("select");
-    typeSel.innerHTML = `<option value="">— Type —</option>` + SEED_SUBASSEMBLIES.map(s => `<option value="${s.key}" ${line.subKey===s.key?"selected":""}>${escapeHtml(s.name)}</option>`).join("");
+    typeSel.innerHTML = `<option value="">— Type —</option>` + SUB_DB.map(s => `<option value="${s.key}" ${line.subKey===s.key?"selected":""}>${escapeHtml(s.name)}</option>`).join("");
     typeSel.addEventListener("change", e => { line.subKey = e.target.value; renderPdSubAssemblies(); renderPdTotals(); });
     tr.children[0].appendChild(typeSel);
     const qtyInp = document.createElement("input");
     qtyInp.type = "number"; qtyInp.step = "1"; qtyInp.min = "0"; qtyInp.value = line.qty ?? "";
     qtyInp.className = "num";
-    qtyInp.addEventListener("input", e => { line.qty = parseFloat(e.target.value)||0; renderPdSubAssemblies(); renderPdTotals(); });
+    qtyInp.addEventListener("input", e => { line.qty = parseFloat(e.target.value)||0; renderPdSoon(); });
     tr.children[1].appendChild(qtyInp);
     const dimInp = document.createElement("input");
     dimInp.type = "number"; dimInp.step = "0.5"; dimInp.min = "0"; dimInp.value = line.dim ?? "";
     dimInp.className = "num";
-    dimInp.addEventListener("input", e => { line.dim = parseFloat(e.target.value)||0; renderPdSubAssemblies(); renderPdTotals(); });
+    dimInp.addEventListener("input", e => { line.dim = parseFloat(e.target.value)||0; renderPdSoon(); });
     tr.children[2].appendChild(dimInp);
     const del = document.createElement("button");
     del.className = "btn icon"; del.textContent = "✕";
@@ -3393,7 +3726,7 @@ function renderPdLabor() {
     const hInp = document.createElement("input");
     hInp.type = "number"; hInp.step = "0.25"; hInp.min = "0"; hInp.value = line.hours ?? "";
     hInp.className = "num";
-    hInp.addEventListener("input", e => { line.hours = parseFloat(e.target.value)||0; renderPdLabor(); renderPdTotals(); });
+    hInp.addEventListener("input", e => { line.hours = parseFloat(e.target.value)||0; renderPdSoon(); });
     tr.children[1].appendChild(hInp);
     const del = document.createElement("button");
     del.className = "btn icon"; del.textContent = "✕";
@@ -3637,8 +3970,8 @@ function renderInvoiceLineItems() {
     tr.querySelector(".li-qty").value = li.qty ?? "";
     tr.querySelector(".li-unit").value = li.unitPrice ?? "";
     tr.querySelector(".li-desc").addEventListener("input", e => { li.description = e.target.value; });
-    tr.querySelector(".li-qty").addEventListener("input", e => { li.qty = parseFloat(e.target.value)||0; renderInvoiceLineItems(); renderInvoiceTotalsPanel(); });
-    tr.querySelector(".li-unit").addEventListener("input", e => { li.unitPrice = parseFloat(e.target.value)||0; renderInvoiceLineItems(); renderInvoiceTotalsPanel(); });
+    tr.querySelector(".li-qty").addEventListener("input", e => { li.qty = parseFloat(e.target.value)||0; renderInvSoon(); });
+    tr.querySelector(".li-unit").addEventListener("input", e => { li.unitPrice = parseFloat(e.target.value)||0; renderInvSoon(); });
     tr.querySelector("button").addEventListener("click", () => { _stagedInvoice.lineItems = _stagedInvoice.lineItems.filter(x => x.id !== li.id); renderInvoiceLineItems(); renderInvoiceTotalsPanel(); });
     tbody.appendChild(tr);
   }
@@ -3745,8 +4078,8 @@ window.convertQuoteToInvoice = convertQuoteToInvoice;
 
 
 /* ---------- Jobs ---------- */
-const JOB_STATUSES = ["Scheduled", "In Fabrication", "Ready for Install", "On Hold", "Installed", "Complete", "Cancelled"];
-const BOARD_STATUSES = ["Scheduled","In Fabrication","Ready for Install","Installed","Complete"];
+const JOB_STATUSES = ["Pending Deposit", "Permitting", "In Production", "Ready for Install", "Final Invoicing", "Complete"];
+const BOARD_STATUSES = ["Pending Deposit","Permitting","In Production","Ready for Install","Final Invoicing","Complete"];
 const JOB_PRIORITIES = ["Low","Normal","High","Rush"];
 const DEFAULT_PHASES = ["Design","Materials Ordered","Fabrication","Prep & Paint","Install","Walkthrough"];
 
@@ -3764,7 +4097,7 @@ function newJob() {
     customerId: null, customerCompany: "", customerName: "", customerEmail: "", customerPhone: "",
     quoteId: null, quoteNumber: "",
     projectName: "", description: "",
-    status: "Scheduled",
+    status: "Pending Deposit",
     priority: "Normal",
     scheduledStart: ymd, scheduledEnd: "",
     actualStart: "", actualEnd: "",
@@ -3778,7 +4111,7 @@ function newJob() {
 function renderJobsCount() {
   const el = document.getElementById("jobs-count");
   if (el) {
-    const active = JOBS.filter(j => !["Complete","Cancelled"].includes(j.status)).length;
+    const active = JOBS.filter(j => !["Complete"].includes(j.status)).length;
     el.textContent = active;
   }
 }
@@ -3813,10 +4146,10 @@ function _filterJobs() {
 function renderJobsList() {
   const root = document.getElementById("jobs-list");
   const items = _filterJobs();
-  const active = JOBS.filter(j => !["Complete","Cancelled"].includes(j.status));
+  const active = JOBS.filter(j => !["Complete"].includes(j.status));
   document.getElementById("jobs-stats").textContent = `${JOBS.length} total · ${active.length} active`;
   if (!items.length) { root.innerHTML = `<div class="empty">No jobs yet. Click <strong>+ New Job</strong> to add one.</div>`; return; }
-  const statusColors = { "Scheduled":"#3B82F6","In Fabrication":"#F59E0B","Ready for Install":"#0891B2","On Hold":"#94a3b8","Installed":"#15803d","Complete":"#15803d","Cancelled":"#94a3b8" };
+  const statusColors = { "Pending Deposit":"#F59E0B","Permitting":"#7C3AED","In Production":"#F1593A","Ready for Install":"#0891B2","Final Invoicing":"#3B82F6","Complete":"#15803d" };
   const priorityStyles = { Rush:"#DC2626", High:"#F59E0B", Normal:"#475569", Low:"#94a3b8" };
   let h = `<table class="list-table"><thead><tr>
     <th>Job #</th><th>Customer / Project</th><th>Schedule</th><th>Status</th><th>Priority</th><th>Crew</th><th>Phases</th><th></th>
@@ -3852,7 +4185,7 @@ function renderJobsList() {
 function renderJobsBoard() {
   const root = document.getElementById("jobs-board");
   const items = _filterJobs();
-  const active = JOBS.filter(j => !["Complete","Cancelled"].includes(j.status));
+  const active = JOBS.filter(j => !["Complete"].includes(j.status));
   document.getElementById("jobs-stats").textContent = `${JOBS.length} total · ${active.length} active`;
   let h = `<div class="jobs-board">`;
   for (const status of BOARD_STATUSES) {
@@ -4064,7 +4397,7 @@ function convertInvoiceToJob(inv) {
   j.installCity = inv.customerCity || "";
   j.installRegion = inv.customerRegion || "";
   j.installZip = inv.customerZip || "";
-  j.status = "Scheduled";
+  j.status = "Pending Deposit";
   stampActivity(j);
   JOBS.push(j);
   saveJson(STORAGE_KEYS.jobs, JOBS);
@@ -4089,12 +4422,74 @@ function switchView(name) {
   if (name === "saved") renderSavedList();
   if (name === "db") { renderDbCategorySelect(); renderDbList(); }
   if (name === "laborDb") renderLaborDbList();
+  if (name === "subDb") renderSubDbList();
   if (name === "customers") renderCustomersList();
   if (name === "templates") renderTemplatesList();
   if (name === "pending") renderPendingList();
   if (name === "users") renderUsersList();
   if (name === "invoices") renderInvoicesList();
   if (name === "jobs") renderJobsView();
+}
+
+function renderSubDbList() {
+  const search = (document.getElementById("sub-db-search").value || "").toLowerCase();
+  const staleDays = parseInt(document.getElementById("sub-db-stale-filter").value, 10);
+  const root = document.getElementById("sub-db-list");
+  let items = SUB_DB.slice().sort((a,b) => a.name.localeCompare(b.name));
+  if (search) items = items.filter(s => s.name.toLowerCase().includes(search) || (s.key||"").toLowerCase().includes(search));
+  if (!isNaN(staleDays)) items = items.filter(s => daysSince(s.lastRevised) > staleDays);
+  const stale90 = SUB_DB.filter(s => daysSince(s.lastRevised) > 90).length;
+  document.getElementById("sub-db-stats").textContent = `${SUB_DB.length} sub-assemblies · ${stale90} older than 90 days`;
+  let h = `<table class="list-table"><thead><tr>
+    <th>Name</th><th>Unit</th><th class="num">Cost</th><th class="num">Price</th><th class="num">Markup ×</th><th>Last Revised</th><th>Age</th><th></th>
+  </tr></thead><tbody>`;
+  for (const s of items) {
+    const age = daysSince(s.lastRevised);
+    const ageClass = age > 180 ? "stale" : (age > 90 ? "warn" : "");
+    const mult = s.cost > 0 ? (s.price / s.cost) : 0;
+    const multClass = mult >= 1.5 ? "gp-good" : (mult >= 1.2 ? "gp-warn" : "gp-bad");
+    h += `<tr data-id="${s.id}">
+      <td><input type="text" value="${escapeHtml(s.name)}" data-field="name" style="width:100%;padding:3px 6px;border:1px solid var(--line-strong);border-radius:4px;"></td>
+      <td><select data-field="unit" style="padding:3px 6px;border:1px solid var(--line-strong);border-radius:4px;font-size:11px;">
+        <option value="per_in" ${s.unit==="per_in"?"selected":""}>per inch</option>
+        <option value="per_lnft" ${s.unit==="per_lnft"?"selected":""}>per lnft</option>
+        <option value="per_sqft" ${s.unit==="per_sqft"?"selected":""}>per sqft</option>
+        <option value="each" ${s.unit==="each"?"selected":""}>each</option>
+      </select></td>
+      <td class="num"><input type="number" step="0.01" min="0" value="${s.cost}" data-field="cost" style="width:80px;text-align:right;padding:3px 6px;border:1px solid var(--line-strong);border-radius:4px;"></td>
+      <td class="num"><input type="number" step="0.01" min="0" value="${s.price}" data-field="price" style="width:80px;text-align:right;padding:3px 6px;border:1px solid var(--line-strong);border-radius:4px;"></td>
+      <td class="num ${multClass}">${mult.toFixed(2)}×</td>
+      <td><input type="date" value="${s.lastRevised || ""}" data-field="lastRevised" style="padding:3px 6px;border:1px solid var(--line-strong);border-radius:4px;"></td>
+      <td class="${ageClass}">${isNaN(age) ? "—" : age+"d"}</td>
+      <td><button class="btn sm" data-sub-del="${s.id}">Delete</button></td>
+    </tr>`;
+  }
+  h += `</tbody></table>`;
+  root.innerHTML = h || `<div class="empty">No matching sub-assemblies.</div>`;
+  root.querySelectorAll("input[data-field], select[data-field]").forEach(inp => {
+    inp.addEventListener("change", e => {
+      const tr = e.target.closest("tr");
+      const id = tr.dataset.id;
+      const field = e.target.dataset.field;
+      const s = SUB_DB.find(x => x.id === id);
+      if (!s) return;
+      if (field === "cost" || field === "price") s[field] = parseFloat(e.target.value) || 0;
+      else s[field] = e.target.value;
+      saveJson(STORAGE_KEYS.subAssembliesDb, SUB_DB);
+      renderSubDbList();
+      try { render(); } catch(_) {}
+    });
+  });
+  root.querySelectorAll("[data-sub-del]").forEach(b => b.addEventListener("click", () => {
+    const id = b.getAttribute("data-sub-del");
+    const s = SUB_DB.find(x => x.id === id);
+    if (!s) return;
+    if (!confirm(`Delete "${s.name}"? Existing quotes referencing it will lose the link.`)) return;
+    SUB_DB = SUB_DB.filter(x => x.id !== id);
+    saveJson(STORAGE_KEYS.subAssembliesDb, SUB_DB);
+    renderSubDbList();
+    try { render(); } catch(_) {}
+  }));
 }
 
 function renderLaborDbList() {
@@ -4731,6 +5126,37 @@ document.addEventListener("DOMContentLoaded", () => {
     a.click();
   });
 
+  // Sub-Assemblies DB wiring
+  const subSearch = document.getElementById("sub-db-search");
+  if (subSearch) subSearch.addEventListener("input", renderSubDbList);
+  const subStale = document.getElementById("sub-db-stale-filter");
+  if (subStale) subStale.addEventListener("change", renderSubDbList);
+  const subAdd = document.getElementById("sub-db-add-btn");
+  if (subAdd) subAdd.addEventListener("click", () => {
+    const name = prompt("Sub-assembly name? (e.g. Standard Front-Lit Channel Letter)"); if (!name) return;
+    const unit = prompt("Unit? per_in / per_lnft / per_sqft / each", "per_in") || "per_in";
+    const cost = parseFloat(prompt("Cost per unit (USD)?", "0")) || 0;
+    const price = parseFloat(prompt("Price per unit (USD)?", "0")) || 0;
+    const key = "custom_" + uid();
+    SUB_DB.push({ id: uid(), key, name: name.trim(), unit, cost, price, lastRevised: new Date().toISOString().slice(0,10) });
+    saveJson(STORAGE_KEYS.subAssembliesDb, SUB_DB);
+    renderSubDbList();
+  });
+  const subExport = document.getElementById("sub-db-export-btn");
+  if (subExport) subExport.addEventListener("click", () => {
+    const rows = [["Name","Unit","Cost","Price","Markup x","Last Revised","Key"]];
+    for (const s of SUB_DB) {
+      const mult = s.cost > 0 ? (s.price / s.cost).toFixed(2) : "";
+      rows.push([s.name, s.unit, s.cost, s.price, mult, s.lastRevised, s.key]);
+    }
+    const csv = rows.map(r => r.map(v => `"${String(v||"").replace(/"/g,'""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], {type:"text/csv"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `caliber_subassemblies_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  });
+
   // Labor DB wiring
   $("#labor-db-search").addEventListener("input", renderLaborDbList);
   $("#labor-db-stale-filter").addEventListener("change", renderLaborDbList);
@@ -4764,6 +5190,31 @@ document.addEventListener("DOMContentLoaded", () => {
   try { renderHomeView(); } catch(e) { console.error("renderHomeView failed:", e); }
   try { document.body.classList.add("on-home"); } catch(_) {}
   try { migrateAttachmentsToIDB().catch(e => console.warn("Attachment migration error:", e)); } catch(e) { console.warn("Migration call threw:", e); }
+
+  // Login wiring — gate the app on an active session
+  const loginSubmit = document.getElementById("login-submit");
+  if (loginSubmit) loginSubmit.addEventListener("click", handleLoginSubmit);
+  const loginPwd = document.getElementById("login-password");
+  if (loginPwd) loginPwd.addEventListener("keydown", (e) => { if (e.key === "Enter") handleLoginSubmit(); });
+  const loginUser = document.getElementById("login-user");
+  if (loginUser) loginUser.addEventListener("keydown", (e) => { if (e.key === "Enter") { const p = document.getElementById("login-password"); if (p) p.focus(); } });
+
+  // Determine if there's an active session
+  const sessionUid = getActiveSessionUserId();
+  const sessionUser = sessionUid ? USERS.find(u => u.id === sessionUid) : null;
+  if (sessionUser) {
+    CURRENT_USER_ID = sessionUser.id;
+    saveJson(STORAGE_KEYS.currentUser, CURRENT_USER_ID);
+    try { applyRoleClass(); renderUserPill(); } catch(_) {}
+    hideLoginOverlay();
+    bumpActivity();
+  } else {
+    showLoginOverlay();
+  }
+  // Track activity to reset inactivity timer
+  ["click","keydown","mousemove","touchstart"].forEach(evt => {
+    document.addEventListener(evt, () => { if (getActiveSessionUserId()) bumpActivity(); }, { passive: true });
+  });
 });
 
 // Global error reporter — surface any uncaught error visibly so we can diagnose
@@ -4799,6 +5250,12 @@ function flash(btn, msg) {
           <div class="field"><label>Avatar Color</label>
             <div class="color-swatches" id="ud-color-swatches"></div>
             <input type="hidden" id="ud-color">
+          </div>
+          <div class="field full"><label>Password <span class="modal-hint" id="ud-password-hint">leave blank to keep current</span></label>
+            <input id="ud-password" type="password" autocomplete="new-password" placeholder="Set or change password">
+          </div>
+          <div class="field full"><label>Confirm Password</label>
+            <input id="ud-password-confirm" type="password" autocomplete="new-password" placeholder="Type it again">
           </div>
         </div>
       </section>
@@ -4976,7 +5433,7 @@ function flash(btn, msg) {
             <thead><tr>
               <th class="item-col">Type</th>
               <th class="num">Qty</th>
-              <th class="num">Height (in.) / Length (lnft)</th>
+              <th class="num">Dimension (in / lnft / sqft)</th>
               <th class="num cost-col">Unit Cost</th>
               <th class="num">Unit Price</th>
               <th class="num cost-col">Cost</th>
@@ -5131,7 +5588,7 @@ function flash(btn, msg) {
           <div class="field"><label>Job #</label><input id="job-number" type="text"></div>
           <div class="field"><label>Status</label>
             <select id="job-status">
-              <option>Scheduled</option><option>In Fabrication</option><option>Ready for Install</option><option>On Hold</option><option>Installed</option><option>Complete</option><option>Cancelled</option>
+              <option>Pending Deposit</option><option>Permitting</option><option>In Production</option><option>Ready for Install</option><option>Final Invoicing</option><option>Complete</option>
             </select>
           </div>
           <div class="field"><label>Priority</label>
